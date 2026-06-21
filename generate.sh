@@ -23,9 +23,13 @@ if [[ -z "$TXT" ]]; then
 fi
 echo "Chat file: $TXT"
 
-# Image prefix in the output HTML = zip name without .zip extension
-# (matches the directory that GitHub Pages will serve alongside index.html)
-CHAT_FOLDER_NAME="${ZIP%.zip}"
+# Copy images into repo so GitHub Pages can serve them
+mkdir -p images
+find /tmp/wa_extract -maxdepth 2 \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.gif" -o -iname "*.webp" \) \
+  -exec cp -n {} images/ \;
+echo "Images copied → images/"
+
+CHAT_FOLDER_NAME="images"
 
 python3 - "$TXT" "$CHAT_FOLDER_NAME" <<'PYEOF'
 import sys, re, html as ht, os, pathlib
